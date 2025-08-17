@@ -10,10 +10,9 @@ export const signOut = async () => {
   const cookieStore = await cookies();
 
   try {
+    await supabase.auth.signOut();
     cookieStore.delete("user_profile");
     revalidatePath("/", "layout");
-    await supabase.auth.signOut();
-    console.log("Signed out successfully");
   } catch (error) {
     console.log("Error signing out: ", error);
   }

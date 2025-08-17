@@ -2,14 +2,14 @@
 
 import { INITIAL_STATE_LOGIN_FORM } from "@/constant/auth.constant";
 import { createClient } from "@/lib/supabase/server";
-import { authFormState } from "@/types/auth";
+import { AuthFormState } from "@/types/auth";
 import { loginSchemaForm } from "@/validations/auth-validation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function login(
-  prevState: authFormState,
+  prevState: AuthFormState,
   formData: FormData | null
 ) {
   if (!formData) return INITIAL_STATE_LOGIN_FORM;
