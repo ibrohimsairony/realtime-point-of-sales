@@ -30,8 +30,6 @@ export const SIDEBAR_MENU_LIST = {
       icon: Users,
     },
   ],
-  cashier: [],
-  kitchen: [],
 };
 
 export type SidebarMenuKey = keyof typeof SIDEBAR_MENU_LIST;

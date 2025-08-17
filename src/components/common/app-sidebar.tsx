@@ -26,16 +26,12 @@ import { SIDEBAR_MENU_LIST, SidebarMenuKey } from "@/constant/sidebar-constant";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/actions/auth-action";
+import { useAuthStore } from "@/strores/auth-store";
 
 export default function AppSidebar() {
   const { isMobile } = useSidebar();
   const pathname = usePathname();
-
-  const profile = {
-    name: "Ibrohim Sairony",
-    role: "admin",
-    avatar_url: "",
-  };
+  const profile = useAuthStore((state) => state.profile);
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -56,7 +52,7 @@ export default function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent className="flex flex-col gap-2">
             <SidebarMenu>
-              {SIDEBAR_MENU_LIST[profile.role as SidebarMenuKey]?.map(
+              {SIDEBAR_MENU_LIST[profile?.role as SidebarMenuKey]?.map(
                 (item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild tooltip={item.title}>
@@ -87,13 +83,18 @@ export default function AppSidebar() {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-accent-foreground"
                 >
                   <Avatar className="w-8 h-8 rounded-lg">
-                    <AvatarImage src="" alt="" />
-                    <AvatarFallback className="rounded-lg">I</AvatarFallback>
+                    <AvatarImage
+                      src={profile?.avatar_url}
+                      alt={profile?.name}
+                    />
+                    <AvatarFallback className="rounded-lg capitalize">
+                      {profile?.name?.charAt(0)}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="leading-tight">
-                    <h4 className="font-medium truncate">Ibrohim Sairony</h4>
-                    <p className="text-xs truncate text-muted-foreground">
-                      Admin
+                    <h4 className="font-medium truncate">{profile?.name}</h4>
+                    <p className="text-xs truncate text-muted-foreground capitalize">
+                      {profile?.role}
                     </p>
                   </div>
                   <EllipsisVertical className="ml-auto size-4"></EllipsisVertical>
@@ -108,13 +109,18 @@ export default function AppSidebar() {
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex item-center px-1 py-1.5 gap-2">
                     <Avatar className="w-8 h-8 rounded-lg">
-                      <AvatarImage src="" alt="" />
-                      <AvatarFallback className="rounded-lg">I</AvatarFallback>
+                      <AvatarImage
+                        src={profile?.avatar_url}
+                        alt={profile?.name}
+                      />
+                      <AvatarFallback className="rounded-lg capitalize">
+                        {profile?.name?.charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="leading-tight">
-                      <h4 className="font-medium truncate">Ibrohim Sairony</h4>
-                      <p className="text-xs truncate text-muted-foreground">
-                        Admin
+                      <h4 className="font-medium truncate">{profile?.name}</h4>
+                      <p className="text-xs truncate text-muted-foreground capitalize">
+                        {profile?.role}
                       </p>
                     </div>
                   </div>
