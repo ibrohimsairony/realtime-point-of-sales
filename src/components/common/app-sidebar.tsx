@@ -25,7 +25,7 @@ import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
 import { SIDEBAR_MENU_LIST, SidebarMenuKey } from "@/constant/sidebar-constant";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { signOut } from "@/app/actions/auth-action";
+import { signOut } from "@/actions/auth-action";
 
 export default function AppSidebar() {
   const { isMobile } = useSidebar();
