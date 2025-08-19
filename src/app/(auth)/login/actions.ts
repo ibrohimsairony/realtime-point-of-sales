@@ -1,6 +1,6 @@
 "use server";
 
-import { INITIAL_STATE_LOGIN_FORM } from "@/constant/auth.constant";
+import { INITIAL_STATE_LOGIN } from "@/constant/auth.constant";
 import { createClient } from "@/lib/supabase/server";
 import { AuthFormState } from "@/types/auth";
 import { loginSchemaForm } from "@/validations/auth-validation";
@@ -12,7 +12,7 @@ export async function login(
   prevState: AuthFormState,
   formData: FormData | null
 ) {
-  if (!formData) return INITIAL_STATE_LOGIN_FORM;
+  if (!formData) return INITIAL_STATE_LOGIN;
 
   const validatedFields = loginSchemaForm.safeParse({
     email: formData.get("email"),

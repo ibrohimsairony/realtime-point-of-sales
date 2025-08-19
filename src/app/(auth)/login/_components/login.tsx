@@ -11,7 +11,7 @@ import {
 import { Form } from "@/components/ui/form";
 import {
   INITIAL_LOGIN_FORM,
-  INITIAL_STATE_LOGIN_FORM,
+  INITIAL_STATE_LOGIN,
 } from "@/constant/auth.constant";
 import { LoginForm, loginSchemaForm } from "@/validations/auth-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,7 +29,7 @@ export default function Login() {
 
   const [loginState, loginAction, isPendingLogin] = useActionState(
     login,
-    INITIAL_STATE_LOGIN_FORM
+    INITIAL_STATE_LOGIN
   );
   const onSubmit = form.handleSubmit(async (data) => {
     const formData = new FormData();

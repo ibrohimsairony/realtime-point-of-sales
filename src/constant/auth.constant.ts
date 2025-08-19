@@ -3,7 +3,7 @@ export const INITIAL_LOGIN_FORM = {
   password: "",
 };
 
-export const INITIAL_STATE_LOGIN_FORM = {
+export const INITIAL_STATE_LOGIN = {
   status: "idle",
   errors: {
     email: [],
@@ -17,4 +17,24 @@ export const INITIAL_STATE_PROFILE = {
   name: "",
   role: "",
   avatar_url: "",
+};
+
+export const INITIAL_CREATE_USER_FORM = {
+  name: "",
+  email: "",
+  password: "",
+  role: "",
+  avatar_url: "",
+};
+
+export const INITIAL_STATE_CREATE_USER = {
+  status: "idle",
+  errors: {
+    name: [],
+    email: [],
+    role: [],
+    password: [],
+    avatar_url: [],
+    _form: [],
+  },
 };

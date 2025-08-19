@@ -1,0 +1,117 @@
+"use client";
+import FormInput from "@/components/common/form-input";
+import { Button } from "@/components/ui/button";
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Form } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { startTransition, useActionState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+
+import {
+  INITIAL_CREATE_USER_FORM,
+  INITIAL_STATE_CREATE_USER,
+} from "@/constant/auth.constant";
+import {
+  CreateUserForm,
+  createUserSchemaForm,
+} from "@/validations/auth-validation";
+import { createUser } from "../action";
+import { toast } from "sonner";
+
+export default function DialogCreateUser({ refetch }: { refetch: () => void }) {
+  const form = useForm<CreateUserForm>({
+    resolver: zodResolver(createUserSchemaForm),
+    defaultValues: INITIAL_CREATE_USER_FORM,
+  });
+
+  const [createUserState, createUserAction, isPendingCreateUser] =
+    useActionState(createUser, INITIAL_STATE_CREATE_USER);
+  const onSubmit = form.handleSubmit(async (data) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    startTransition(() => {
+      createUserAction(formData);
+    });
+  });
+
+  useEffect(() => {
+    if (createUserState?.status === "error") {
+      toast.error("Create User Failed", {
+        description: createUserState?.errors?._form?.[0],
+      });
+    }
+    if (createUserState?.status === "success") {
+      toast.success("Create User Success");
+      form.reset();
+      document.querySelector<HTMLButtonElement>('[data-state="open"]')?.click();
+      refetch();
+    }
+  }, [createUserState]);
+  return (
+    <DialogContent className="sm:max-w-[425px]">
+      <DialogHeader>
+        <DialogTitle>Create User</DialogTitle>
+        <DialogDescription>Register a new User</DialogDescription>
+      </DialogHeader>
+      <Form {...form}>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <FormInput
+            form={form}
+            name="name"
+            label="Name"
+            placeholder="insert your Name"
+          />
+          <FormInput
+            form={form}
+            name="email"
+            label="Email"
+            placeholder="insert your Email"
+            type="email"
+          />
+
+          <FormInput
+            form={form}
+            name="role"
+            label="Role"
+            placeholder="insert your Role"
+          />
+          <FormInput
+            form={form}
+            name="password"
+            label="Password"
+            placeholder="*********"
+            type="password"
+          />
+          <FormInput
+            form={form}
+            name="avatar_url"
+            label="Avatar URL"
+            placeholder="insert your Avatar URL"
+          />
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button type="submit">
+              {isPendingCreateUser ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Create"
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </Form>
+    </DialogContent>
+  );
+}
