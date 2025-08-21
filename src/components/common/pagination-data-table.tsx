@@ -1,3 +1,4 @@
+import { Button } from "../ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -21,12 +22,14 @@ export default function PaginationDataTable({
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious
-            onClick={() => {
-              if (currentPage > 1) onChangePage(currentPage - 1);
-              else onChangePage(totalPages);
-            }}
-          />
+          <Button variant="ghost" className="px-0">
+            <PaginationPrevious
+              onClick={() => {
+                if (currentPage > 1) onChangePage(currentPage - 1);
+                else onChangePage(totalPages);
+              }}
+            />
+          </Button>
         </PaginationItem>
         {Array.from({ length: totalPages }, (_, i) => {
           const page = i + 1;
@@ -37,14 +40,16 @@ export default function PaginationDataTable({
           ) {
             return (
               <PaginationItem key={page}>
-                <PaginationLink
-                  isActive={page === currentPage}
-                  onClick={() => {
-                    if (page !== currentPage) onChangePage(page);
-                  }}
-                >
-                  {page}
-                </PaginationLink>
+                <Button variant="ghost" className="px-0">
+                  <PaginationLink
+                    isActive={page === currentPage}
+                    onClick={() => {
+                      if (page !== currentPage) onChangePage(page);
+                    }}
+                  >
+                    {page}
+                  </PaginationLink>
+                </Button>
               </PaginationItem>
             );
           }
@@ -61,12 +66,14 @@ export default function PaginationDataTable({
           }
         })}
         <PaginationItem>
-          <PaginationNext
-            onClick={() => {
-              if (currentPage < totalPages) onChangePage(currentPage + 1);
-              else onChangePage(1);
-            }}
-          />
+          <Button variant="ghost" className="px-0">
+            <PaginationNext
+              onClick={() => {
+                if (currentPage < totalPages) onChangePage(currentPage + 1);
+                else onChangePage(1);
+              }}
+            />
+          </Button>
         </PaginationItem>
       </PaginationContent>
     </Pagination>

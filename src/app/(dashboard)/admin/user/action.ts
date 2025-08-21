@@ -1,10 +1,11 @@
 "use server";
+import { deleteFile, uploadFile } from "@/actions/storage-action";
 import { createClient } from "@/lib/supabase/server";
 import { AuthFormState } from "@/types/auth";
 import { createUserSchemaForm } from "@/validations/auth-validation";
 
 export async function createUser(prevState: AuthFormState, formData: FormData) {
-  const validatedFields = createUserSchemaForm.safeParse({
+  let validatedFields = createUserSchemaForm.safeParse({
     name: formData?.get("name"),
     email: formData?.get("email"),
     role: formData?.get("role"),
@@ -18,6 +19,32 @@ export async function createUser(prevState: AuthFormState, formData: FormData) {
       errors: {
         ...validatedFields.error.flatten().fieldErrors,
         _form: [],
+      },
+    };
+  }
+
+  if (validatedFields.data.avatar_url instanceof File) {
+    const { errors, data } = await uploadFile(
+      "images",
+      "users",
+      validatedFields.data.avatar_url
+    );
+    if (errors) {
+      return {
+        status: "error",
+        errors: {
+          ...prevState.errors,
+          _form: [...errors._form],
+        },
+      };
+    }
+
+    // * reassign avatar_url, before: file to string
+    validatedFields = {
+      ...validatedFields,
+      data: {
+        ...validatedFields.data,
+        avatar_url: data.url,
       },
     };
   }
@@ -36,14 +63,23 @@ export async function createUser(prevState: AuthFormState, formData: FormData) {
     },
   });
 
+  console.log(validatedFields.data.avatar_url);
+
   if (error) {
-    return {
-      status: "error",
-      errors: {
-        ...prevState.errors,
-        _form: [error.message],
-      },
-    };
+    // * assign path images
+    const path = (validatedFields.data.avatar_url as string).split(
+      `/public/images/`
+    )[1];
+    // * handle delete image, because image successed send to bucket
+    const { errors } = await deleteFile("images", path);
+    if (!errors)
+      return {
+        status: "error",
+        errors: {
+          ...prevState.errors,
+          _form: [error.message],
+        },
+      };
   }
 
   return {

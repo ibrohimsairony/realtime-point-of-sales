@@ -12,7 +12,7 @@ import {
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -27,6 +27,8 @@ import {
 import { createUser } from "../action";
 import { toast } from "sonner";
 import FormSelect from "@/components/common/form-select";
+import FormImage from "@/components/common/form-image";
+import { file } from "zod";
 
 export default function DialogCreateUser({ refetch }: { refetch: () => void }) {
   const form = useForm<CreateUserForm>({
@@ -36,10 +38,15 @@ export default function DialogCreateUser({ refetch }: { refetch: () => void }) {
 
   const [createUserState, createUserAction, isPendingCreateUser] =
     useActionState(createUser, INITIAL_STATE_CREATE_USER);
+
+  const [preview, setPreview] = useState<
+    { file: File; displayUrl: string } | undefined
+  >(undefined);
+
   const onSubmit = form.handleSubmit(async (data) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value);
+      formData.append(key, key === "avatar_url" ? preview!.file ?? "" : value);
     });
     startTransition(() => {
       createUserAction(formData);
@@ -55,6 +62,7 @@ export default function DialogCreateUser({ refetch }: { refetch: () => void }) {
     if (createUserState?.status === "success") {
       toast.success("Create User Success");
       form.reset();
+      setPreview(undefined);
       document.querySelector<HTMLButtonElement>('[data-state="open"]')?.click();
       refetch();
     }
@@ -94,11 +102,12 @@ export default function DialogCreateUser({ refetch }: { refetch: () => void }) {
             placeholder="*********"
             type="password"
           />
-          <FormInput
+          <FormImage
             form={form}
             name="avatar_url"
-            label="Avatar URL"
-            placeholder="insert your Avatar URL"
+            label="Avatar"
+            preview={preview}
+            setPreview={setPreview}
           />
           <DialogFooter>
             <DialogClose asChild>

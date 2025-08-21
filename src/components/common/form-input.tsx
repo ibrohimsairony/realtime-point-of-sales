@@ -26,19 +26,19 @@ export default function FormInput<T extends FieldValues>({
     <FormField
       control={form.control}
       name={name}
-      render={({ field }) => (
+      render={({ field: { ...rest } }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
             {type == "textarea" ? (
               <Textarea
-                {...field}
+                {...rest}
                 placeholder={placeholder}
                 autoComplete="off"
               />
             ) : (
               <Input
-                {...field}
+                {...rest}
                 type={type}
                 placeholder={placeholder}
                 autoComplete="off"
