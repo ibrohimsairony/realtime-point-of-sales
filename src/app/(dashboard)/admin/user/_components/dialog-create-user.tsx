@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import FormSelect from "@/components/common/form-select";
 import FormImage from "@/components/common/form-image";
 import { file } from "zod";
+import FormUser from "@/app/(dashboard)/_components/form-user";
 
 export default function DialogCreateUser({ refetch }: { refetch: () => void }) {
   const form = useForm<CreateUserForm>({
@@ -68,61 +69,13 @@ export default function DialogCreateUser({ refetch }: { refetch: () => void }) {
     }
   }, [createUserState]);
   return (
-    <DialogContent className="sm:max-w-[425px]">
-      <DialogHeader>
-        <DialogTitle>Create User</DialogTitle>
-        <DialogDescription>Register a new User</DialogDescription>
-      </DialogHeader>
-      <Form {...form}>
-        <form onSubmit={onSubmit} className="space-y-4">
-          <FormInput
-            form={form}
-            name="name"
-            label="Name"
-            placeholder="insert your Name"
-          />
-          <FormInput
-            form={form}
-            name="email"
-            label="Email"
-            placeholder="insert your Email"
-            type="email"
-          />
-
-          <FormSelect
-            form={form}
-            name="role"
-            label="Role"
-            selectItem={ROLE_LIST}
-          />
-          <FormInput
-            form={form}
-            name="password"
-            label="Password"
-            placeholder="*********"
-            type="password"
-          />
-          <FormImage
-            form={form}
-            name="avatar_url"
-            label="Avatar"
-            preview={preview}
-            setPreview={setPreview}
-          />
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit">
-              {isPendingCreateUser ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                "Create"
-              )}
-            </Button>
-          </DialogFooter>
-        </form>
-      </Form>
-    </DialogContent>
+    <FormUser
+      form={form}
+      isLoading={isPendingCreateUser}
+      type="Create"
+      onSubmit={onSubmit}
+      preview={preview}
+      setPreview={setPreview}
+    />
   );
 }
