@@ -1,4 +1,4 @@
-import { INITIAL_STATE_PROFILE } from "@/constant/auth.constant";
+import { INITIAL_STATE_PROFILE } from "@/constants/auth.constant";
 import { Profile } from "@/types/auth";
 import { User } from "@supabase/supabase-js";
 import { create } from "zustand";

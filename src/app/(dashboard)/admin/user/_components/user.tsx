@@ -5,23 +5,28 @@ import DropdownAction from "@/components/common/dropdown-action";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { HEADER_TABLE_USER } from "@/constant/user-constant";
+import { HEADER_TABLE_USER } from "@/constants/user-constant";
 import useDataTable from "@/hooks/use-data-table";
 import { createClient } from "@/lib/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Loader, Loader2, Pencil, Trash, Trash2 } from "lucide-react";
-import { useMemo } from "react";
+import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import DialogCreateUser from "./dialog-create-user";
+import { Profile } from "@/types/auth";
+import DialogActionUser from "./dialog-action-user";
+import { set } from "zod";
 
 export default function UserManagement() {
+  const [data, setData] = useState<Profile | null>(null);
+
   const supabase = createClient();
   const {
     currentPage,
     currentLimit,
     currentSearch,
-    handleChangeLimit,
     handleChangePage,
+    handleChangeLimit,
     handleChangeSearch,
   } = useDataTable();
   const {
@@ -39,12 +44,14 @@ export default function UserManagement() {
         .ilike("name", `%${currentSearch}%`);
 
       if (result.error)
-        toast.error("Get User Data Failed", {
-          description: result.error?.message,
+        toast.error("Get User data failed", {
+          description: result.error.message,
         });
+
       return result;
     },
   });
+
   const filteredData = useMemo(() => {
     return (users?.data || []).map((user, index) => {
       return [
@@ -52,45 +59,22 @@ export default function UserManagement() {
         user.id,
         user.name,
         user.role,
-        // eslint-disable-next-line react/jsx-key
-        <DropdownAction
-          menu={[
-            {
-              label: (
-                <span className="flex items-center gap-2">
-                  <Pencil />
-                  Edit
-                </span>
-              ),
-              action: () => {},
-            },
-            {
-              label: (
-                <span className="flex items-center gap-2">
-                  <Trash2 className="text-red-400" />
-                  Delete
-                </span>
-              ),
-              variant: "destructive",
-              action: () => {},
-            },
-          ]}
-        />,
+        <DialogActionUser key={user.id} currentData={user} refetch={refetch} />,
       ];
     });
   }, [users]);
 
   const totalPages = useMemo(() => {
     return users && users.count !== null
-      ? Math.ceil(users?.count / currentLimit)
+      ? Math.ceil(users.count / currentLimit)
       : 0;
   }, [users]);
 
   return (
     <div className="w-full">
-      <div className="flex flex-col lg:flex-row  mb-4 gap-2 justify-between w-full">
-        <h1 className="text-2xl font-bold ">User Management</h1>
-        <div className="flex gap-2 ">
+      <div className="flex flex-col lg:flex-row mb-4 gap-2 justify-between w-full">
+        <h1 className="text-2xl font-bold">User Management</h1>
+        <div className="flex gap-2">
           <Input
             placeholder="Search by name"
             onChange={(e) => handleChangeSearch(e.target.value)}
@@ -103,11 +87,10 @@ export default function UserManagement() {
           </Dialog>
         </div>
       </div>
-
       <DataTable
         header={HEADER_TABLE_USER}
-        isLoading={isLoading}
         data={filteredData}
+        isLoading={isLoading}
         totalPages={totalPages}
         currentPage={currentPage}
         currentLimit={currentLimit}

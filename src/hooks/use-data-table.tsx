@@ -1,4 +1,4 @@
-import { DEFAULT_LIMIT, DEFAULT_PAGE } from "@/constant/data-table-constant";
+import { DEFAULT_LIMIT, DEFAULT_PAGE } from "@/constants/data-table-constant";
 import { useState } from "react";
 import useDebounce from "./use-debounce";
 

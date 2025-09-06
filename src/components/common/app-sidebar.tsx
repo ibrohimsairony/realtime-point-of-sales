@@ -22,7 +22,10 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
-import { SIDEBAR_MENU_LIST, SidebarMenuKey } from "@/constant/sidebar-constant";
+import {
+  SIDEBAR_MENU_LIST,
+  SidebarMenuKey,
+} from "@/constants/sidebar-constant";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/actions/auth-action";

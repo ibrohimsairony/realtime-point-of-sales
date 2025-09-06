@@ -19,7 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { LIMIT_LISTS } from "@/constant/data-table-constant";
+import { LIMIT_LISTS } from "@/constants/data-table-constant";
+import { Dialog } from "../ui/dialog";
 
 export default function DataTable({
   header,
