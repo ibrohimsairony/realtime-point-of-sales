@@ -9,17 +9,15 @@ import { HEADER_TABLE_USER } from "@/constants/user-constant";
 import useDataTable from "@/hooks/use-data-table";
 import { createClient } from "@/lib/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
+import { EllipsisVertical, Pencil, PencilLine, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import DialogCreateUser from "./dialog-create-user";
 import { Profile } from "@/types/auth";
-import DialogActionUser from "./dialog-action-user";
 import { set } from "zod";
+import DialogUpdateUser from "./dialog-update-user";
 
 export default function UserManagement() {
-  const [data, setData] = useState<Profile | null>(null);
-
   const supabase = createClient();
   const {
     currentPage,
@@ -29,6 +27,12 @@ export default function UserManagement() {
     handleChangeLimit,
     handleChangeSearch,
   } = useDataTable();
+  const [selectedAction, setSelectedAction] = useState<{
+    data: Profile;
+    type: "update" | "delete";
+  } | null>(null);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+
   const {
     data: users,
     isLoading,
@@ -52,6 +56,17 @@ export default function UserManagement() {
     },
   });
 
+  const handleChangeAction = (open: boolean) => {
+    if (!open) setSelectedAction(null);
+  };
+  const handleOpenUpdateDialog = (data: Profile) => {
+    setOpenUpdateDialog(true);
+    setSelectedAction({
+      data,
+      type: "update",
+    });
+  };
+
   const filteredData = useMemo(() => {
     return (users?.data || []).map((user, index) => {
       return [
@@ -59,7 +74,18 @@ export default function UserManagement() {
         user.id,
         user.name,
         user.role,
-        <DialogActionUser key={user.id} currentData={user} refetch={refetch} />,
+        <div key="action" className="flex gap-2">
+          <Button
+            variant="ghost"
+            className="cursor-pointer"
+            onClick={() => handleOpenUpdateDialog(user)}
+          >
+            <PencilLine className=" size-5 " />
+          </Button>
+          <Button variant="ghost" className="cursor-pointer">
+            <Trash2 className=" size-5 text-red-600" />
+          </Button>
+        </div>,
       ];
     });
   }, [users]);
@@ -96,6 +122,12 @@ export default function UserManagement() {
         currentLimit={currentLimit}
         onChangePage={handleChangePage}
         onChangeLimit={handleChangeLimit}
+      />
+      <DialogUpdateUser
+        refetch={refetch}
+        currentData={selectedAction?.data}
+        openDialog={openUpdateDialog}
+        handleChangeOpenDialog={setOpenUpdateDialog}
       />
     </div>
   );

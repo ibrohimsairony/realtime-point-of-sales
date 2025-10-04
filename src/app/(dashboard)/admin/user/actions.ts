@@ -8,12 +8,13 @@ import {
 } from "@/validations/auth-validation";
 
 export async function createUser(prevState: AuthFormState, formData: FormData) {
+  console.log("🚀 ~ createUser ~ validatedFields:");
   let validatedFields = createUserSchemaForm.safeParse({
     name: formData?.get("name"),
     email: formData?.get("email"),
     role: formData?.get("role"),
     password: formData?.get("password"),
-    avatar_url: formData?.get("avatar_url"),
+    avatar_url: formData.get("avatar_url"),
   });
 
   if (!validatedFields.success) {

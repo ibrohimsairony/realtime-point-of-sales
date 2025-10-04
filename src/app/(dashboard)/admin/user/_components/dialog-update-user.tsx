@@ -12,16 +12,17 @@ import { Preview } from "@/types/general";
 import FormUser from "./form-user";
 import { Profile } from "@/types/auth";
 import { Dialog } from "@radix-ui/react-dialog";
-import { DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { EllipsisVertical } from "lucide-react";
 
-export default function DialogActionUser({
+export default function DialogUpdateUser({
   refetch,
   currentData,
+  openDialog,
+  handleChangeOpenDialog,
 }: {
   refetch: () => void;
-  currentData?: Profile | null;
+  currentData?: Profile;
+  openDialog?: boolean;
+  handleChangeOpenDialog?: (open: boolean) => void;
 }) {
   const form = useForm<UpdateUserForm>({
     resolver: zodResolver(updateUserSchemaForm),
@@ -33,6 +34,7 @@ export default function DialogActionUser({
   const [preview, setPreview] = useState<Preview | undefined>(undefined);
 
   const onSubmit = form.handleSubmit((data) => {
+    console.log(data);
     const formData = new FormData();
     if (currentData?.avatar_url !== data.avatar_url) {
       Object.entries(data).forEach(([key, value]) => {
@@ -64,7 +66,7 @@ export default function DialogActionUser({
     if (updateUserState?.status === "success") {
       toast.success("Update User Success");
       form.reset();
-      document.querySelector<HTMLButtonElement>('[data-state="open"]')?.click();
+      handleChangeOpenDialog?.(false);
       refetch();
     }
   }, [updateUserState]);
@@ -82,16 +84,7 @@ export default function DialogActionUser({
   }, [currentData]);
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="text-muted-foreground size-8"
-          size="icon"
-        >
-          <EllipsisVertical />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={openDialog} onOpenChange={handleChangeOpenDialog}>
       <FormUser
         form={form}
         onSubmit={onSubmit}

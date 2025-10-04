@@ -8,9 +8,10 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { FileImage } from "lucide-react";
+import { FileImage, Trash2, X } from "lucide-react";
 import { getImageData } from "@/lib/utils";
 import { Preview } from "@/types/general";
+import { Button } from "../ui/button";
 
 export default function FormImage<T extends FieldValues>({
   form,
@@ -23,7 +24,7 @@ export default function FormImage<T extends FieldValues>({
   name: Path<T>;
   label: string;
   preview?: Preview;
-  setPreview: (preview: Preview) => void;
+  setPreview?: (preview: Preview) => void;
 }) {
   return (
     <FormField
@@ -34,16 +35,33 @@ export default function FormImage<T extends FieldValues>({
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <div className="flex items-center gap-2">
-              <Avatar className="w-9 h-9 rounded-lg ">
-                <AvatarImage
-                  src={preview?.displayUrl}
-                  alt="preview"
-                  className="object-cover"
-                />
-                <AvatarFallback className="rounded-lg capitalize">
+              <Avatar className="h-9 w-9 rounded-lg">
+                {!!preview?.displayUrl && (
+                  <AvatarImage
+                    src={preview?.displayUrl}
+                    alt="preview"
+                    className="object-cover"
+                  />
+                )}
+                <AvatarFallback className="rounded-lg">
                   <FileImage className="w-4 h-4" />
                 </AvatarFallback>
               </Avatar>
+
+              {/* <Button
+                type="button"
+                hidden={!preview?.displayUrl}
+                variant={"ghost"}
+                onClick={async (event) => {
+                  onChange(event);
+                  setPreview?.({
+                    file: new File([], "empty.txt", { type: "text/plain" }),
+                    displayUrl: "",
+                  });
+                }}
+              >
+                <Trash2 />
+              </Button> */}
               <Input
                 type="file"
                 name={rest.name}
