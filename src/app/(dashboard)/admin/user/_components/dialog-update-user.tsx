@@ -1,4 +1,4 @@
-import { INITIAL_STATE_UPDATE_USER } from "@/constants/auth.constant";
+import { INITIAL_STATE_UPDATE_USER } from "@/constants/auth-constant";
 import {
   UpdateUserForm,
   updateUserSchemaForm,
@@ -34,7 +34,6 @@ export default function DialogUpdateUser({
   const [preview, setPreview] = useState<Preview | undefined>(undefined);
 
   const onSubmit = form.handleSubmit((data) => {
-    console.log(data);
     const formData = new FormData();
     if (currentData?.avatar_url !== data.avatar_url) {
       Object.entries(data).forEach(([key, value]) => {

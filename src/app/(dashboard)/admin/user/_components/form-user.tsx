@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { ROLE_LIST } from "@/constants/auth.constant";
+import { ROLE_LIST } from "@/constants/auth-constant";
 import { Preview } from "@/types/general";
 import { Loader2 } from "lucide-react";
 import { FormEvent } from "react";

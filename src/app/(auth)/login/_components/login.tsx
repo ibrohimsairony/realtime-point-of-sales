@@ -12,7 +12,7 @@ import { Form } from "@/components/ui/form";
 import {
   INITIAL_LOGIN_FORM,
   INITIAL_STATE_LOGIN,
-} from "@/constants/auth.constant";
+} from "@/constants/auth-constant";
 import { LoginForm, loginSchemaForm } from "@/validations/auth-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startTransition, useActionState, useEffect } from "react";

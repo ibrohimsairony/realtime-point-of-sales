@@ -23,6 +23,17 @@ export async function uploadFile(
       };
     }
   }
+  const isImageRegex = /\.(png|jpe?g|gif|svg)$/i;
+
+  if (!isImageRegex.test(file.name)) {
+    return {
+      status: "success",
+      data: {
+        url: "",
+        path: "",
+      },
+    };
+  }
 
   const { error } = await supabase.storage.from(bucket).upload(newPath, file);
   if (error) {

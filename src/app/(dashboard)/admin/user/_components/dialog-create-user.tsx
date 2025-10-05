@@ -1,7 +1,7 @@
 import {
   INITIAL_CREATE_USER_FORM,
   INITIAL_STATE_CREATE_USER,
-} from "@/constants/auth.constant";
+} from "@/constants/auth-constant";
 import {
   CreateUserForm,
   createUserSchemaForm,

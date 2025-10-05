@@ -8,7 +8,6 @@ import {
 } from "@/validations/auth-validation";
 
 export async function createUser(prevState: AuthFormState, formData: FormData) {
-  console.log("🚀 ~ createUser ~ validatedFields:");
   let validatedFields = createUserSchemaForm.safeParse({
     name: formData?.get("name"),
     email: formData?.get("email"),
@@ -164,6 +163,38 @@ export async function updateUser(prevState: AuthFormState, formData: FormData) {
     };
   }
 
+  return {
+    status: "success",
+  };
+}
+
+export async function deleteUser(prevState: AuthFormState, formData: FormData) {
+  const supabase = await createClient({ isAdmin: true });
+  const image = formData.get("avatar_url") as string;
+  const { errors } = await deleteFile("images", image.split("/images/")?.[1]);
+
+  if (errors) {
+    return {
+      status: "error",
+      errors: {
+        ...prevState.errors,
+        _form: [...(errors._form?.[0] ?? "Unknown Error")],
+      },
+    };
+  }
+  const { error } = await supabase.auth.admin.deleteUser(
+    formData.get("id") as string
+  );
+  console.log("🚀 ~ deleteUser ~ error:", error?.message);
+  if (error) {
+    return {
+      status: "error",
+      errors: {
+        ...prevState.errors,
+        _form: [...error.message],
+      },
+    };
+  }
   return {
     status: "success",
   };

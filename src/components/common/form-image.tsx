@@ -36,19 +36,20 @@ export default function FormImage<T extends FieldValues>({
           <FormControl>
             <div className="flex items-center gap-2">
               <Avatar className="h-9 w-9 rounded-lg">
-                {!!preview?.displayUrl && (
+                {!!preview?.displayUrl ? (
                   <AvatarImage
                     src={preview?.displayUrl}
                     alt="preview"
                     className="object-cover"
                   />
+                ) : (
+                  <div className="flex justify-center items-center aspect-square rounded-lg">
+                    <FileImage className="w-4 h-4" />
+                  </div>
                 )}
-                <AvatarFallback className="rounded-lg">
-                  <FileImage className="w-4 h-4" />
-                </AvatarFallback>
               </Avatar>
 
-              {/* <Button
+              <Button
                 type="button"
                 hidden={!preview?.displayUrl}
                 variant={"ghost"}
@@ -61,7 +62,7 @@ export default function FormImage<T extends FieldValues>({
                 }}
               >
                 <Trash2 />
-              </Button> */}
+              </Button>
               <Input
                 type="file"
                 name={rest.name}
