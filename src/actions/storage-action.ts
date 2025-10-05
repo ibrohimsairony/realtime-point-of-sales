@@ -2,6 +2,9 @@
 
 import { environment } from "@/configs/environment";
 import { createClient } from "@/lib/supabase/server";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
+import { SupabaseAuthClientOptions } from "@supabase/supabase-js/dist/module/lib/types";
 
 export async function uploadFile(
   bucket: string,
@@ -55,7 +58,6 @@ export async function uploadFile(
 
 export async function deleteFile(bucket: string, path: string) {
   const supabase = await createClient();
-
   const { error } = await supabase.storage.from(bucket).remove([path]);
 
   if (error) {

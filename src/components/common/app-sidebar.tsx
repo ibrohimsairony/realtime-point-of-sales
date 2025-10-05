@@ -30,11 +30,17 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/actions/auth-action";
 import { useAuthStore } from "@/strores/auth-store";
+import { useEffect, useState } from "react";
 
 export default function AppSidebar() {
   const { isMobile } = useSidebar();
   const pathname = usePathname();
   const profile = useAuthStore((state) => state.profile);
+  const [mounted, isMounted] = useState(false);
+  useEffect(() => {
+    isMounted(true);
+  }, []);
+  // * Melindungi dari kesalahan hidrasi
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -105,7 +111,7 @@ export default function AppSidebar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="rounded-lg min-w-56"
-                side={isMobile ? "bottom" : "right"}
+                side={mounted && isMobile ? "bottom" : "right"}
                 align="end"
                 sideOffset={4}
               >

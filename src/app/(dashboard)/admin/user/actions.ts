@@ -185,7 +185,6 @@ export async function deleteUser(prevState: AuthFormState, formData: FormData) {
   const { error } = await supabase.auth.admin.deleteUser(
     formData.get("id") as string
   );
-  console.log("🚀 ~ deleteUser ~ error:", error?.message);
   if (error) {
     return {
       status: "error",
