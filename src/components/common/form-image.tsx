@@ -69,6 +69,7 @@ export default function FormImage<T extends FieldValues>({
                 ref={rest.ref}
                 onBlur={rest.onBlur}
                 disabled={rest.disabled}
+                accept=".jpg, .jpeg, .png, .webp, .svg"
                 onChange={async (event) => {
                   onChange(event);
                   const { file, displayUrl } = getImageData(event);

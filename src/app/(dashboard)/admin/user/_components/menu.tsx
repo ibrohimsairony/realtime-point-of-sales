@@ -4,21 +4,19 @@ import DataTable from "@/components/common/data-table";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { HEADER_TABLE_USER } from "@/constants/user-constant";
 import useDataTable from "@/hooks/use-data-table";
 import { createClient } from "@/lib/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { PencilLine, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Profile } from "@/types/auth";
 import { Menu } from "@/validations/menu-validation";
 import Image from "next/image";
 import { cn, convertIRD } from "@/lib/utils";
 import { HEADER_TABLE_MENU } from "@/constants/menu-constant";
 import DialogCreateMenu from "../../menu/_components/dialog-create-menu";
 import DialogUpdateMenu from "../../menu/_components/dialog-update-menu";
-import DialogDeleteMenu from "../../menu/_components/dialog-delete-user";
+import DialogDeleteMenu from "../../menu/_components/dialog-delete-menu";
 
 export default function UserManagement() {
   const supabase = createClient();

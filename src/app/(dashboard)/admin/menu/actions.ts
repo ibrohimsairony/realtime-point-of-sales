@@ -190,7 +190,7 @@ export async function deleteMenu(prevState: MenuFormState, formData: FormData) {
   const { error } = await supabase
     .from("menus")
     .delete()
-    .eq("id", formData.get("id") as string);
+    .eq("id", formData.get("id"));
   if (error) {
     return {
       status: "error",
