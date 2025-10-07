@@ -1,5 +1,6 @@
 import FormImage from "@/components/common/form-image";
 import FormInput from "@/components/common/form-input";
+import FormRadio from "@/components/common/form-radio";
 import FormSelect from "@/components/common/form-select";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,19 +12,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { ROLE_LIST } from "@/constants/auth-constant";
+import { AVAILABILITY_LIST, CATEGORY_LIST } from "@/constants/menu-constant";
 import { Preview } from "@/types/general";
 import { Loader2 } from "lucide-react";
 import { FormEvent } from "react";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 
-export default function FormUser<T extends FieldValues>({
+export default function FormMenu<T extends FieldValues>({
   form,
   onSubmit,
   isLoading,
   type,
   preview,
   setPreview,
+  handleFormReset,
 }: {
   form: UseFormReturn<T>;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -31,17 +33,18 @@ export default function FormUser<T extends FieldValues>({
   type: "Create" | "Update";
   preview?: Preview;
   setPreview?: (preview: Preview) => void;
+  handleFormReset?: () => void;
 }) {
   return (
     <DialogContent className="sm:max-w-[425px]">
       <Form {...form}>
         <div className="flex justify-between mt-3">
           <DialogHeader>
-            <DialogTitle>{type} User</DialogTitle>
+            <DialogTitle>{type} Menu</DialogTitle>
             <DialogDescription>
               {type === "Create"
-                ? "Register a new user"
-                : "Make changes user here"}
+                ? "Register new menu here"
+                : "Make changes menu here"}
             </DialogDescription>
           </DialogHeader>
           <Button
@@ -49,47 +52,61 @@ export default function FormUser<T extends FieldValues>({
             onClick={() => form.reset()}
             className="text-red-600 hover:text-red-500"
           >
-            Reset Form
+            Reset
           </Button>
         </div>
         <form onSubmit={onSubmit} className="space-y-4">
-          <FormInput
-            form={form}
-            name={"name" as Path<T>}
-            label="Name"
-            placeholder="Insert your name"
-          />
-          {type === "Create" && (
+          <div className="space-y-4 max-h-[50vh] overflow-auto px-2 pb-2">
             <FormInput
               form={form}
-              name={"email" as Path<T>}
-              label="Email"
-              placeholder="Insert email here"
-              type="email"
+              name={"name" as Path<T>}
+              label="Name"
+              placeholder="Insert name here"
             />
-          )}
-          <FormImage
-            form={form}
-            name={"avatar_url" as Path<T>}
-            label="Avatar"
-            preview={preview}
-            setPreview={setPreview}
-          />
-          <FormSelect
-            form={form}
-            name={"role" as Path<T>}
-            label="Role"
-            selectItem={ROLE_LIST}
-          />
-          {type === "Create" && (
             <FormInput
               form={form}
-              name={"password" as Path<T>}
-              label="Password"
-              placeholder="******"
-              type="password"
+              name={"description" as Path<T>}
+              label="Description"
+              placeholder="Insert description here"
+              type="textarea"
             />
-          )}
+            <FormSelect
+              form={form}
+              name={"category" as Path<T>}
+              label="Category"
+              selectItem={CATEGORY_LIST}
+            />
+            <FormImage
+              form={form}
+              name={"image_url" as Path<T>}
+              label="Image"
+              preview={preview}
+              setPreview={setPreview}
+            />
+            <FormRadio
+              form={form}
+              name={"is_available" as Path<T>}
+              label="Availability"
+              radioItem={AVAILABILITY_LIST}
+              wrap={false}
+            />
+            <div className="flex gap-2">
+              <FormInput
+                form={form}
+                name={"price" as Path<T>}
+                label="Price"
+                placeholder="Insert price here"
+                type="number"
+              />
+              <FormInput
+                form={form}
+                name={"discount" as Path<T>}
+                label="Discount (%)"
+                placeholder="Insert discount here"
+                type="number"
+              />
+            </div>
+          </div>
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>

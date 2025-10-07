@@ -13,8 +13,6 @@ export const createClient = async ({
   const { SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY } =
     environment;
 
-  console.log("🚀 ~ createClient ~ isAdmin:", isAdmin);
-
   return createServerClient(
     SUPABASE_URL!,
     isAdmin ? SUPABASE_SERVICE_ROLE_KEY! : SUPABASE_ANON_KEY!,
