@@ -1,4 +1,4 @@
-import MenuManagement from "../user/_components/menu";
+import MenuManagement from "./_components/menu";
 
 export const metadata = {
   title: "Rony Cafe | Menu Management",

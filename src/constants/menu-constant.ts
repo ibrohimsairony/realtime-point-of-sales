@@ -31,7 +31,7 @@ export const CATEGORY_LIST = [
   },
 ];
 
-export const AVAILABILITY_LIST = [
+export const AVAILABILITY_RADIO = [
   {
     value: "true",
     label: "Available",

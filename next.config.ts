@@ -9,13 +9,12 @@ const nextConfig: NextConfig = {
   },
   devIndicators: false,
   images: {
-    domains: ["https://ndqevlcaphgrlltmkbdv.supabase.co"],
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "ndqevlcaphgrlltmkbdv.supabase.co",
+        hostname: "*.supabase.co", // Untuk Supabase Storage images
         port: "",
-        pathname: "/**",
+        pathname: "/storage/v1/object/public/**",
       },
     ],
   },

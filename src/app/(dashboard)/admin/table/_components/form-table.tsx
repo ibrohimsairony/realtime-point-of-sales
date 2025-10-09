@@ -1,7 +1,5 @@
-import FormImage from "@/components/common/form-image";
 import FormInput from "@/components/common/form-input";
 import FormRadio from "@/components/common/form-radio";
-import FormSelect from "@/components/common/form-select";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -12,27 +10,22 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { AVAILABILITY_RADIO, CATEGORY_LIST } from "@/constants/menu-constant";
-import { Preview } from "@/types/general";
+import { STATUS_TABLE_RADIO } from "@/constants/table-constant";
 import { Loader2 } from "lucide-react";
 import { FormEvent } from "react";
 import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 
-export default function FormMenu<T extends FieldValues>({
+export default function FormTable<T extends FieldValues>({
   form,
   onSubmit,
   isLoading,
   type,
-  preview,
-  setPreview,
   handleFormReset,
 }: {
   form: UseFormReturn<T>;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
   type: "Create" | "Update";
-  preview?: Preview;
-  setPreview?: (preview: Preview) => void;
   handleFormReset?: () => void;
 }) {
   return (
@@ -40,11 +33,11 @@ export default function FormMenu<T extends FieldValues>({
       <Form {...form}>
         <div className="flex justify-between mt-3">
           <DialogHeader>
-            <DialogTitle>{type} Menu</DialogTitle>
+            <DialogTitle>{type} Table</DialogTitle>
             <DialogDescription>
               {type === "Create"
-                ? "Register new menu here"
-                : "Make changes menu here"}
+                ? "Register new table here"
+                : "Make changes table here"}
             </DialogDescription>
           </DialogHeader>
           <Button
@@ -70,42 +63,20 @@ export default function FormMenu<T extends FieldValues>({
               placeholder="Insert description here"
               type="textarea"
             />
-            <FormSelect
+            <FormInput
               form={form}
-              name={"category" as Path<T>}
-              label="Category"
-              selectItem={CATEGORY_LIST}
-            />
-            <FormImage
-              form={form}
-              name={"image_url" as Path<T>}
-              label="Image"
-              preview={preview}
-              setPreview={setPreview}
+              name={"capacity" as Path<T>}
+              label="Capacity"
+              placeholder="Insert capacity here"
+              type="number"
             />
             <FormRadio
               form={form}
-              name={"is_available" as Path<T>}
-              label="Availability"
-              radioItem={AVAILABILITY_RADIO}
+              name={"status" as Path<T>}
+              label="Status"
+              radioItem={STATUS_TABLE_RADIO}
               wrap={false}
             />
-            <div className="flex gap-2">
-              <FormInput
-                form={form}
-                name={"price" as Path<T>}
-                label="Price"
-                placeholder="Insert price here"
-                type="number"
-              />
-              <FormInput
-                form={form}
-                name={"discount" as Path<T>}
-                label="Discount (%)"
-                placeholder="Insert discount here"
-                type="number"
-              />
-            </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>

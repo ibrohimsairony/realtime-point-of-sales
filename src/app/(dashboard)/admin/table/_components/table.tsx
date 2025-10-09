@@ -10,15 +10,14 @@ import { useQuery } from "@tanstack/react-query";
 import { PencilLine, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Menu } from "@/validations/menu-validation";
-import Image from "next/image";
-import { cn, convertIRD } from "@/lib/utils";
-import { HEADER_TABLE_MENU } from "@/constants/menu-constant";
-import DialogCreateMenu from "../../menu/_components/dialog-create-menu";
-import DialogUpdateMenu from "../../menu/_components/dialog-update-menu";
-import DialogDeleteMenu from "../../menu/_components/dialog-delete-menu";
+import { cn } from "@/lib/utils";
+import { Table } from "@/validations/table-validation";
+import { HEADER_TABLE_TABLE } from "@/constants/table-constant";
+import DialogCreateTable from "./dialog-create-table";
+import DialogUpdateTable from "./dialog-update-table";
+import DialogDeleteTable from "./dialog-delete-table";
 
-export default function UserManagement() {
+export default function TableManagement() {
   const supabase = createClient();
   const {
     currentPage,
@@ -29,7 +28,7 @@ export default function UserManagement() {
     handleChangeSearch,
   } = useDataTable();
   const [selectedAction, setSelectedAction] = useState<{
-    data: Menu;
+    data: Table;
     type?: "update" | "delete";
   } | null>(null);
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
@@ -40,28 +39,28 @@ export default function UserManagement() {
   }, [openUpdateDialog]);
 
   const {
-    data: menus,
+    data: tables,
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["menus", currentPage, currentLimit, currentSearch],
+    queryKey: ["tables", currentPage, currentLimit, currentSearch],
     queryFn: async () => {
       const query = supabase
-        .from("menus")
+        .from("tables")
         .select("*", { count: "exact" })
         .range((currentPage - 1) * currentLimit, currentPage * currentLimit - 1)
         .order("created_at");
 
       if (currentSearch) {
         query.or(
-          `name.ilike.%${currentSearch}%,category.ilike.%${currentSearch}%`
+          `name.ilike.%${currentSearch}%,description .ilike.%${currentSearch}%,status.ilike.%${currentSearch}%`
         );
       }
 
       const result = await query;
 
       if (result.error)
-        toast.error("Get Menu data failed", {
+        toast.error("Get Table data failed", {
           description: result.error.message,
         });
 
@@ -69,96 +68,84 @@ export default function UserManagement() {
     },
   });
 
-  const handleOpenUpdateDialog = (data: Menu) => {
+  const handleOpenUpdateDialog = (data: Table) => {
     setOpenUpdateDialog(true);
     setSelectedAction({
       data,
       type: "update",
     });
   };
-  const handleOpenDeleteDialog = (data: Menu) => {
+  const handleOpenDeleteDialog = (data: Table) => {
     setOpenDeleteDialog(true);
     setSelectedAction({
       data,
     });
   };
   const filteredData = useMemo(() => {
-    return (menus?.data || []).map((menu: Menu, index) => {
+    return (tables?.data || []).map((table: Table, index) => {
       return [
         currentLimit * (currentPage - 1) + index + 1,
-        <div className="flex items-center gap-2" key={menu.id}>
-          <Image
-            src={menu.image_url as string}
-            width={40}
-            height={40}
-            alt={menu.name}
-            className="rounded"
-          />
-          {menu.name}
+        <div className="flex flex-col gap-0.5" key={table.id}>
+          <h2 className="font-bold">{table.name}</h2>
+          <p className="text-xs">{table.description}</p>
         </div>,
-        menu.category,
-        <div key={menu.id}>
-          <p>Base: {convertIRD(menu.price)}</p>
-          <p>Discount: {menu.discount}</p>
-          <p>
-            After Discount:{" "}
-            {convertIRD(menu.price - (menu.price * menu.discount) / 100)}
-          </p>
-        </div>,
+        table.capacity,
+
         <div
-          key={menu.id}
-          className={cn(
-            "px-2 py-1 rounded-full  text-white w-fit",
-            menu.is_available ? "bg-green-600" : "bg-red-500"
-          )}
+          key={table.id}
+          className={cn("px-2 py-1 rounded-full  text-white w-fit capitalize", {
+            "bg-green-600": table.status === "available",
+            "bg-red-500": table.status === "unavailable",
+            "bg-yellow-500": table.status === "reserved",
+          })}
         >
-          {menu.is_available ? "Available" : "Not Available"}
+          {table.status}
         </div>,
         <div key="action" className="flex gap-2">
           <Button
             variant="ghost"
             className="cursor-pointer"
-            onClick={() => handleOpenUpdateDialog(menu)}
+            onClick={() => handleOpenUpdateDialog(table)}
           >
             <PencilLine className=" size-5 " />
           </Button>
           <Button
             variant="ghost"
             className="cursor-pointer"
-            onClick={() => handleOpenDeleteDialog(menu)}
+            onClick={() => handleOpenDeleteDialog(table)}
           >
             <Trash2 className=" size-5 text-red-600" />
           </Button>
         </div>,
       ];
     });
-  }, [menus]);
+  }, [tables]);
 
   const totalPages = useMemo(() => {
-    return menus && menus.count !== null
-      ? Math.ceil(menus.count / currentLimit)
+    return tables && tables.count !== null
+      ? Math.ceil(tables.count / currentLimit)
       : 0;
-  }, [menus]);
+  }, [tables]);
 
   return (
     <div className="w-full">
       <div className="flex flex-col lg:flex-row mb-4 gap-2 justify-between w-full">
-        <h1 className="text-2xl font-bold">Menu Management</h1>
+        <h1 className="text-2xl font-bold">Table Management</h1>
         <div className="flex gap-2">
           <Input
-            placeholder="Search by name"
+            placeholder="Search ...."
             onChange={(e) => handleChangeSearch(e.target.value)}
           />
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline">Create</Button>
             </DialogTrigger>
-            <DialogCreateMenu refetch={refetch} />
+            <DialogCreateTable refetch={refetch} />
           </Dialog>
         </div>
       </div>
       <DataTable
-        header={HEADER_TABLE_MENU}
+        header={HEADER_TABLE_TABLE}
         data={filteredData}
         isLoading={isLoading}
         totalPages={totalPages}
@@ -167,13 +154,13 @@ export default function UserManagement() {
         onChangePage={handleChangePage}
         onChangeLimit={handleChangeLimit}
       />
-      <DialogUpdateMenu
+      <DialogUpdateTable
         refetch={refetch}
         currentData={selectedAction?.data}
         openDialog={openUpdateDialog}
         handleChangeOpenDialog={setOpenUpdateDialog}
       />
-      <DialogDeleteMenu
+      <DialogDeleteTable
         refetch={refetch}
         currentData={selectedAction?.data}
         openDialog={openDeleteDialog}
